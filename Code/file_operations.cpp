@@ -1,12 +1,16 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <filesystem>
 //voids will return ints for "error codes" 0 for passing and -1 for failing
 int create_file(std::string const& filename);
 
 int main(int argc, char** argv)
 {
-    create_file("test.txt");
+    create_file("../Files/test.txt");
+        //this format for making files
+
     
     return 0;
 }
