@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <unordered_map>
 #include <functional>
+#include <cstdlib>
 
 //voids will return ints for "error codes" 0 for passing and -1 for failing
 int create_file(std::string const& filename);
@@ -29,7 +30,7 @@ int main(int argc, char** argv)
             << "\t-Type \"quit\" to quit." << std::endl
             << "\t-create_file [filename.extension]" << std::endl
             << "\t-delete_file [filename.extension]" << std::endl;
-            
+
             return 0;
         }}
         //{"stop", &stop},
