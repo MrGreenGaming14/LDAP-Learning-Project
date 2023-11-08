@@ -24,7 +24,8 @@ int main(int argc, char** argv)
         {"help", [param](std::string/*useless param for syntax reasons*/){
             std::cout << "Usage:  -[command] "
             << "[parameter, if applicable] " << std::endl
-            << "\t-Type \"quit\" to quit." << std::endl;
+            << "\t-Type \"quit\" to quit." << std::endl
+            << "\t-create_file [filename.extension]" << std::endl;
             return 0;
         }}
         //{"stop", &stop},
