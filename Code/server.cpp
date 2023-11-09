@@ -24,9 +24,16 @@ int main(int argc, char** argv)
     server_address.sin_addr.s_addr = INADDR_ANY;
 
     std::cout << "Server: binding" << std::endl;
-    bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address));
+    if (bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
+        perror("Bind failed");
+        return 1;
+    }
+
     std::cout << "Server: listening" << std::endl;
-    listen(server_socket, 5);
+    if (listen(server_socket, 5) < 0) {
+        perror("Listen failed");
+        return 1;
+    }
 
     int client_socket = accept(server_socket, NULL, NULL);
 

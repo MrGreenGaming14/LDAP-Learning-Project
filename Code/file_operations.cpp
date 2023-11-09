@@ -48,6 +48,25 @@ int main(int argc, char** argv)
         //{"restart", &restart}
     };
     //-------------------------------START CONNECT BLOCK----------------------------
+    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(1234); // Server's port number
+    inet_pton(AF_INET, "127.0.0.1", &server_address.sin_addr);
+    std::cout << "Client: connecting" << std::endl;
+    if (connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address)) < 0) {
+        perror("Connection failed");
+        return -1;
+    }
+    std::cout << "Client: connected" << std::endl;
+    //std::ifstream input_file("file_to_send.txt", std::ios::binary);
+    char buffer[1024];
+
+    //while (input_file.read(buffer, sizeof(buffer)) || input_file.gcount()) {
+    //    send(client_socket, buffer, input_file.gcount(), 0);
+    //}
+
+    //input_file.close();
     
     //-------------------------------END CONNECT BLOCK------------------------------
     std::cout << "Welcome to \"Group G's File Sharing Emporium!! "
@@ -66,7 +85,7 @@ int main(int argc, char** argv)
         //executes command
         execute_command(command, param, commands);
     }
-    
+    close(client_socket);
     return 0;
 }
 
@@ -145,28 +164,5 @@ int delete_file(std::string const& filename)
         return -2;
     }
     
-    return 0;
-}
-
-int connect_server()
-{
-    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
-    sockaddr_in server_address;
-    server_address.sin_family = AF_INET;
-    server_address.sin_port = htons(1234); // Server's port number
-    inet_pton(AF_INET, "server_ip_address", &server_address.sin_addr);
-
-    connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address));
-
-    std::ifstream input_file("file_to_send.txt", std::ios::binary);
-    char buffer[1024];
-
-    while (input_file.read(buffer, sizeof(buffer)) || input_file.gcount()) {
-        send(client_socket, buffer, input_file.gcount(), 0);
-    }
-
-    input_file.close();
-    close(client_socket);
-
     return 0;
 }
