@@ -1,3 +1,9 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+    //above for sockets
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -9,12 +15,17 @@
 #include <cstdlib>
 
 //voids will return ints for "error codes" 0 for passing and -1 for failing
+//connect_server() prototype here
 int create_file(std::string const& filename);
 int parse_input(std::string& command, std::string& param);
 int execute_command(std::string& command, std::string& param, 
     std::unordered_map<std::string, std::function<int(std::string)>>& commands);
 int delete_file(std::string const& filename);
 
+/**
+ * Instead of creating and deleting files from this client like we are now,
+ * we redefine the commands to request the server to do these things
+*/
 int main(int argc, char** argv)
 {
     bool run = true;
@@ -36,6 +47,9 @@ int main(int argc, char** argv)
         //{"stop", &stop},
         //{"restart", &restart}
     };
+    //-------------------------------START CONNECT BLOCK----------------------------
+    
+    //-------------------------------END CONNECT BLOCK------------------------------
     std::cout << "Welcome to \"Group G's File Sharing Emporium!! "
         << "(name subject to change.)\" " 
         << "Type \"help\" for a list of commands." << std::endl;
@@ -131,5 +145,28 @@ int delete_file(std::string const& filename)
         return -2;
     }
     
+    return 0;
+}
+
+int connect_server()
+{
+    int client_socket = socket(AF_INET, SOCK_STREAM, 0);
+    sockaddr_in server_address;
+    server_address.sin_family = AF_INET;
+    server_address.sin_port = htons(1234); // Server's port number
+    inet_pton(AF_INET, "server_ip_address", &server_address.sin_addr);
+
+    connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address));
+
+    std::ifstream input_file("file_to_send.txt", std::ios::binary);
+    char buffer[1024];
+
+    while (input_file.read(buffer, sizeof(buffer)) || input_file.gcount()) {
+        send(client_socket, buffer, input_file.gcount(), 0);
+    }
+
+    input_file.close();
+    close(client_socket);
+
     return 0;
 }
